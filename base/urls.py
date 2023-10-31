@@ -1,7 +1,6 @@
 from django import views
 from django.urls import path
-from .views import MyTokenObtainPairView, category_list, category_detail, product_list, product_detail, members
-
+from .views import MyTokenObtainPairView, category_list, category_detail, product_list, product_detail, members,  user_register
 
 urlpatterns = [
     path('categories/', category_list, name='category-list'),
@@ -10,5 +9,6 @@ urlpatterns = [
     path('products/<int:pk>/', product_detail, name='product-detail'),
     path('login/', MyTokenObtainPairView.as_view()),
     path('members/', members, name='members'),
+    path('register', user_register, name='user-register'),
     
 ]
