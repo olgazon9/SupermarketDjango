@@ -44,9 +44,10 @@
                 <div class="product">
                     <img src="${prod.img}">
                     <div>
+                        <p>Name: ${prod.name}</p>
                         <p>Description: ${prod.description}</p>
                         <p>ID: ${prod.id}</p>
-                        <button onclick="addToCart(${prod.id})">Buy</button>
+                        <button onclick="addToCart(${prod.id}, '${prod.name}', '${prod.description}')">Buy</button>
                     </div>
                 </div>
             `).join('');
@@ -56,12 +57,12 @@
 
         load_display();
 
-        function addToCart(productId) {
+        function addToCart(productId, productName, description) {
             const product = cart.find(item => item.id === productId);
             if (product) {
                 product.quantity++;
             } else {
-                cart.push({ id: productId, quantity: 1 });
+                cart.push({ id: productId, quantity: 1, name: productName, description: description });
             }
 
             // Save the cart to local storage
@@ -73,10 +74,9 @@
         function updateCartDisplay() {
             const cartItems = document.getElementById('cart-items');
             cartItems.innerHTML = cart.map(item => {
-                return `<li>Product ID: ${item.id}, Quantity: ${item.quantity}</li>`;
+                return `<li>Product ID: ${item.id}, Name: ${item.name}, Description: ${item.description}, Quantity: ${item.quantity}</li>`;
             }).join('');
         }
     </script>
 </body>
 </html>
-
