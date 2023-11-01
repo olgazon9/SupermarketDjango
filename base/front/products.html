@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .product {
+            display: flex;
+            border: 1px solid #ccc;
+            margin: 10px;
+            padding: 10px;
+        }
+
+        .product img {
+            max-width: 100px;
+            margin-right: 10px;
+        }
+
+        .product button {
+            margin-top: 5px;
+        }
+    </style>
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.21.4/dist/axios.min.js"></script>
+</head>
+<body>
+    <div id="display"></div>
+    <div id="cart">
+        <h2>Shopping Cart</h2>
+        <ul id="cart-items"></ul>
+    </div>
+    <script>
+        const MY_SERVER = "http://127.0.0.1:8000/";
+        let cart = [];
+
+        // Load the cart from local storage when the page loads
+        if (localStorage.getItem("cart")) {
+            cart = JSON.parse(localStorage.getItem("cart"));
+        }
+
+        const load_display = async () => {
+            const res = await axios.get(MY_SERVER + "/products");
+            const productsHTML = res.data.map(prod => `
+                <div class="product">
+                    <img src="${prod.img}">
+                    <div>
+                        <p>Description: ${prod.description}</p>
+                        <p>ID: ${prod.id}</p>
+                        <button onclick="addToCart(${prod.id})">Buy</button>
+                    </div>
+                </div>
+            `).join('');
+            display.innerHTML = productsHTML;
+            updateCartDisplay();
+        }
+
+        load_display();
+
+        function addToCart(productId) {
+            const product = cart.find(item => item.id === productId);
+            if (product) {
+                product.quantity++;
+            } else {
+                cart.push({ id: productId, quantity: 1 });
+            }
+
+            // Save the cart to local storage
+            localStorage.setItem("cart", JSON.stringify(cart));
+
+            updateCartDisplay();
+        }
+
+        function updateCartDisplay() {
+            const cartItems = document.getElementById('cart-items');
+            cartItems.innerHTML = cart.map(item => {
+                return `<li>Product ID: ${item.id}, Quantity: ${item.quantity}</li>`;
+            }).join('');
+        }
+    </script>
+</body>
+</html>
